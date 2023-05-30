@@ -1,0 +1,63 @@
+name: Generate doc
+
+on:
+  push:
+    # branches to consider in the event; optional, defaults to all
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  generate-doc:
+    name: Generate Documentation
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "^1.20.1" # The Go version to download (if necessary) and use.
+
+      - name: Install gomarkdoc
+        run: |
+          export GOPATH="$HOME/go/"
+          export PATH=$PATH:$GOPATH/bin
+          go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@v0.4.1
+
+      - name: Generate docs
+        run: gomarkdoc -u --output '{{.Dir}}/README.md' ./cmd/...
+
+      - name: Merge README.md files
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            let output = '';
+
+            function mergeReadmeFiles(dir) {
+              const files = fs.readdirSync(dir, { withFileTypes: true });
+              for (const file of files) {
+                const filePath = path.join(dir, file.name);
+                if (file.isDirectory()) {
+                  mergeReadmeFiles(filePath);
+                } else if (file.isFile() && file.name.toLowerCase() === 'readme.md') {
+                  output += '\n\n' + fs.readFileSync(filePath, 'utf8');
+                }
+              }
+            }
+
+            mergeReadmeFiles('.');
+
+            fs.writeFileSync('README.md', output);
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: . # The folder the action should deploy.
