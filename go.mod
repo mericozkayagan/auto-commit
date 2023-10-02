@@ -3,6 +3,7 @@ module github.com/mericozkayagan/auto-commit
 go 1.20
 
 require (
+	github.com/joho/godotenv v1.5.1
 	github.com/sashabaranov/go-openai v1.15.3
 	github.com/spf13/cobra v1.7.0
 )

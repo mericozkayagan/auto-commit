@@ -11,15 +11,16 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "autocommit [file-path]",
-	Short: "Automatically commit changes to a Git repository",
-	Long: `Autocommit is a CLI tool that monitors changes in a file and automatically
+	Use:               "autocommit [directory]",
+	Short:             "Automatically commit changes to a Git repository",
+	PersistentPreRunE: src.IsRootDirectory,
+	Long: `Autocommit is a CLI tool that monitors changes in a directory and automatically
 commits those changes to a Git repository. It retrieves the changes in the specified
-file and generates a commit message using an AI-powered model. The generated commit
+directory and generates a commit message using an AI-powered model. The generated commit
 message is prefixed with the provided prefix.
 
-The tool periodically checks for changes in the file and commits them if any are found.`,
-	Args: cobra.ExactArgs(1),
+The tool periodically checks for changes in the directory and commits them if any are found.`,
+	Args: cobra.ExactArgs(1), // Expects exactly one argument, which is the directory.
 	RunE: src.AutoCommit,
 }
 
@@ -30,8 +31,6 @@ func Execute() {
 	}
 }
 
-func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().StringVarP(&src.Prefix, "prefix", "p", "", "Commit message prefix")
-
-}
+// func init() {
+// 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+// }
