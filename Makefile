@@ -27,3 +27,4 @@ clean:
 	$(GOCLEAN)
 	rm -f $(BINARY_DIR)/$(BINARY_NAME)
 	rm -rf /usr/local/bin/$(BINARY_NAME)
+
