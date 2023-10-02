@@ -1,0 +1,34 @@
+{
+  "categories": [
+    {
+      "title": "## 🚀 Features",
+      "labels": ["feature"]
+    },
+    {
+      "title": "## 🐛 Bug Fixes",
+      "labels": ["fix"]
+    },
+    {
+      "title": "## 🚦 Tests",
+      "labels": ["automated-test"]
+    },
+    {
+      "title": "## 📝 Documentation updates",
+      "labels": ["docs"]
+    },
+    {
+      "title": "## 👻 Maintenance",
+      "labels": ["technical-debt"]
+    },
+    {
+      "title": "## 🛠️ CI/CD",
+      "labels": ["ci/cd"]
+    },
+    {
+      "title": "## ⬆️ Dependencies",
+      "labels": ["dependencies"]
+    }
+  ],
+  "template": "${{CHANGELOG}}\n\n<details>\n<summary>Other</summary>\n\n${{UNCATEGORIZED}}\n</details>\n\n${{RELEASE_DIFF}}",
+  "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}"
+}

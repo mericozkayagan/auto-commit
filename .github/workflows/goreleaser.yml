@@ -1,0 +1,40 @@
+name: goreleaser
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.20.x
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3.6.1
+        with:
+          configuration: ".github/conf/changelog-config.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write Changelog to File
+        run: echo "${{ steps.github_release.outputs.changelog }}" > /tmp/CHANGELOG.md
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean --release-notes /tmp/CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
